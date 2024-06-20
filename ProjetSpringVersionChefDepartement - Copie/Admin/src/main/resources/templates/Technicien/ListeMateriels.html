@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Technicien/fragmentsTechnicien::header}"></head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Technicien/fragmentsTechnicien::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Technicien/fragmentsTechnicien::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+
+            <br>
+            <br>
+            <p th:if="${size == 0}">Aucune Panne</p>
+
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <p >Liste des Materiels</p>
+
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th scope="col">Materiel</th>
+                    <th scope="col">Departement</th>
+                    <th scope="col">Type</th >
+                    <th scope="col">Membre de Departement </th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr >
+                    <td >dfghjkl</td>
+                    <td >fghjkl</td>
+                    <td >fdghjuk</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#managePanneModal">Gérer Panne</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="~{Technicien/fragmentsTechnicien::footer}"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Technicien/fragmentsTechnicien::scroll}"></a>
+
+
+<!-- Manage Panne Modal -->
+<!-- Manage Panne Modal -->
+<div class="modal fade" id="managePanneModal" tabindex="-1" role="dialog" aria-labelledby="managePanneModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="managePanneModalLabel">Gérer la Panne</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="managePanneForm">
+                    <div class="form-group">
+                        <label class="col-form-label">Sélectionnez l'état de la panne:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="etatPanne" id="severe" value="severe" onclick="toggleSevereForm()">
+                            <label class="form-check-label" for="severe">
+                                Sévère
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="etatPanne" id="nonsevere" value="nonsevere" onclick="handleNonSevere()">
+                            <label class="form-check-label" for="nonsevere">
+                                Non Sévère
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire pour les pannes sévères (initiallement caché) -->
+                    <div id="severeForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="explicationPanne" class="col-form-label">Explication de la panne:</label>
+                            <input type="text" id="explicationPanne" name="explicationPanne" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateApparition" class="col-form-label">Date d'apparition:</label>
+                            <input type="date" id="dateApparition" name="dateApparition" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="frequence" class="col-form-label">Fréquence:</label>
+                            <select id="frequence" name="frequence" class="form-control">
+                                <option value="rare">Rare</option>
+                                <option value="frequente">Fréquente</option>
+                                <option value="permanente">Permanente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ordreLogiciel" class="col-form-label">Ordre logiciel ou matériel:</label>
+                            <select id="ordreLogiciel" name="ordreLogiciel" class="form-control">
+                                <option value="logiciel">Logiciel</option>
+                                <option value="materiel">Matériel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Fin du formulaire pour les pannes sévères -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" onclick="handlePanne()">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End -->
+
+<script>
+    function toggleSevereForm() {
+        var severeCheckbox = document.getElementById("severe");
+        var severeForm = document.getElementById("severeForm");
+
+        if (severeCheckbox.checked) {
+            severeForm.style.display = "block";
+        } else {
+            severeForm.style.display = "none";
+        }
+    }
+
+    function handleNonSevere() {
+        // Fermer la modal
+        $('#managePanneModal').modal('hide');
+
+        // Redirection vers le tableau principal avec l'état "Non Sévère"
+        // Vous pouvez remplacer cette ligne avec l'action appropriée pour afficher le tableau avec les pannes non sévères.
+        // Par exemple, vous pouvez utiliser une requête AJAX pour mettre à jour le contenu de la page.
+        alert("Redirection vers le tableau avec l'état \"Non Sévère\"");
+    }
+
+    function handlePanne() {
+        var etatPanne = document.querySelector('input[name="etatPanne"]:checked').value;
+        if (etatPanne === "severe") {
+            // Code pour gérer les pannes sévères
+            alert("Gérer les pannes sévères");
+        } else if (etatPanne === "nonsevere") {
+            handleNonSevere();
+        } else {
+            alert("Veuillez sélectionner un état de panne.");
+        }
+    }
+</script>
+
+
+
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Technicien/fragmentsTechnicien::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+
+
+</body>
+
+</html>

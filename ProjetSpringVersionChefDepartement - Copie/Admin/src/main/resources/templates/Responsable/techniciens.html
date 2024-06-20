@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleAddCategoryModal"
+                    data-whatever="@mdo">Ajouter Technicien
+            </button>
+            <p th:if="${techniciens.size() == 0}">Aucun Technicien diponible</p>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <br></br>
+            <p >Liste des Techniciens</p>
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+
+                    <th scope="col">Email</th>
+
+
+                    <th scope="col">Supprimer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="technicien : ${techniciens}">
+                    <th scope="row" th:text="${technicien.firstName}"></th>
+                    <th scope="row" th:text="${technicien.lastName}"></th>
+                    <th scope="row" th:text="${technicien.username}"></th>
+
+
+                    <td>
+                        <a th:href="@{/delete-technicien(id = ${technicien.id})}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+
+<!--Add Categories Modal-->
+<div class="modal fade" id="exampleAddCategoryModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleAddCategoryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleAddCategoryModalLabel">Ajouter Technicien</h5>
+            </div>
+            <form th:action="@{/saveTechnicien}" method="post" style="max-width: 1000px; margin: 0 auto;">
+                <div class="form-group">
+                    <label for="firstName" class="col-form-label">First Name:</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="col-form-label">Last Name:</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName">
+                </div>
+                <div class="form-group">
+                    <label for="username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="col-form-label">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <div class="form-group">
+                    <label for="specialite" class="col-form-label">Specialité:</label>
+                    <input type="text" class="form-control" id="specialite" name="specialite">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
+<!--End-->
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit departement</h5>
+            </div>
+            <div class="modal-body">
+                <form method="put" th:action="@{/update-Members}" >
+                    <div class="form-group">
+                        <label for="idEdit" class="col-form-label">ID
+                        </label> <input type="text" class="form-control" id="idEdit" name="id" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-form-label">Category
+                            Name</label> <input type="text" class="form-control" id="editname" name="nomDepartement">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

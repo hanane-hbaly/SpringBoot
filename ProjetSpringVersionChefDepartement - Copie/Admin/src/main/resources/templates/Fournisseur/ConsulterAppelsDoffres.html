@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Fournisseur/fragmentsFournisseures::header}"></head>
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul th:replace="~{Fournisseur/fragmentsFournisseures::sidebar}"></ul>
+    <!-- End of Sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav th:replace="~{Fournisseur/fragmentsFournisseures::top-navbar}"></nav>
+            <!-- End of Topbar -->
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Consulter les appels d'offres </h1>
+                <!-- Table to display AppelOffre and its Besoins -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Appel d'offre</th>
+                        <th>CPU</th>
+                        <th>RAM</th>
+                        <th>Disque dur</th>
+                        <th>Écran</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${appelOffres.isEmpty()}">
+                        <td colspan="6">Aucun appel d'offre trouvé.</td>
+                    </tr>
+                    <tr th:each="appelOffre, i : ${appelOffres}">
+                        <td th:text="${appelOffre.datePub}"></td>
+                        <td th:text="${ordinateurs[i.index].cpu}"></td>
+                        <td th:text="${ordinateurs[i.index].ram}"></td>
+                        <td th:text="${ordinateurs[i.index].disqueDur}"></td>
+                        <td th:text="${ordinateurs[i.index].ecran}"></td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                                    th:onclick="'setComputerId(' + ${ordinateurs[i.index].getId()} + ')'">
+                                Soumettre
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- End of Main Content -->
+        <!-- Footer -->
+        <footer th:replace="~{fragments::footer}"></footer>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button-->
+<a th:replace="~{Fournisseur/fragmentsFournisseures::scroll}"></a>
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Fournisseur/fragmentsFournisseures::script}"></div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Saisir le prix et la marque</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="submitForm" method="post" th:action="@{enregistrerRessourceAvecFournisseur}">
+                    <div class="form-group">
+                        <label for="prix" class="col-form-label">Prix (en DH):</label>
+                        <input type="text" class="form-control" id="prix" name="prix">
+                    </div>
+                    <div class="form-group">
+                        <label for="marque" class="col-form-label">Marque:</label>
+                        <input type="text" class="form-control" id="marque" name="marque">
+                    </div>
+                    <input type="hidden" id="computerId" name="idRessource"> <!-- Champs caché pour idRessource -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Enregistrer</button> <!-- Utilisation de type="button" pour éviter la soumission automatique -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var computerId;
+
+    function setComputerId(id) {
+        computerId = id;
+        document.getElementById('computerId').value = id;
+    }
+
+    function submitForm() {
+        var form = document.getElementById('submitForm');
+        form.submit();
+    }
+</script>
+
+<style>
+    .custom-select:required:invalid {
+        color: gray;  /* Text color for the placeholder */
+    }
+</style>
+<script>
+    function submitForm() {
+        var form = document.getElementById('submitForm');
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Mise à jour de la page ici
+                alert('Enregistrement réussi !');
+                // Vous pouvez ajouter ici d'autres actions si nécessaire
+            } else {
+                alert('Erreur lors de l\'enregistrement.');
+            }
+        };
+        xhr.send(formData);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleAddCategoryModal">
+                Ajouter Membre
+            </button>
+            <p th:if="${MembreDepartement.size() == 0}">Aucun Membre disponible</p>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <br></br>
+            <p >Liste des Membres de departement</p>
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+
+                    <th scope="col">Email</th>
+                    <th scope="col">AffecterRole</th>
+                    <th scope="col">AffecterDepartement</th>
+
+                    <th scope="col">Supprimer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="MembreDepartement : ${MembreDepartement}">
+                    <th scope="row" th:text="${MembreDepartement.firstName}"></th>
+                    <th scope="row" th:text="${MembreDepartement.lastName}"></th>
+                    <th scope="row" th:text="${MembreDepartement.username}"></th>
+
+                    <td>
+                        <a th:href="@{/AffecterEnseignant(id = ${MembreDepartement.id})}">Enseignant</a>
+                        <br>
+                        <a th:href="@{/AffecterChef(id = ${MembreDepartement.id})}">Chef De Departement</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/AffecterDepar(id = ${MembreDepartement.id})}">Affecter Département</a>
+                    </td>
+
+
+                    <td>
+                        <a th:href="@{/delete-Members(id = ${MembreDepartement.id})}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+
+<!--Add Categories Modal-->
+<div class="modal fade" id="exampleAddCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleAddCategoryModalLabel">Ajouter Technicien</h5>
+            </div>
+            <form th:action="@{/saveMembers}" method="post" style="max-width: 1000px; margin: 0 auto;">
+                <div class="form-group">
+                    <label for="domaineExpertise" class="col-form-label">Domaine d'Expertise:</label>
+                    <input type="text" class="form-control" id="domaineExpertise" name="domaineExpertise">
+                </div>
+                <div class="form-group">
+                    <label for="laboratoire" class="col-form-label">Laboratoire:</label>
+                    <input type="text" class="form-control" id="laboratoire" name="laboratoire">
+                </div>
+
+                <div class="form-group">
+                    <label for="firstName" class="col-form-label">First Name:</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="col-form-label">Last Name:</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName">
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="col-form-label">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+
+
+
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+
+
+<!--End-->
+
+<!-- Edit Category Modal -->
+
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

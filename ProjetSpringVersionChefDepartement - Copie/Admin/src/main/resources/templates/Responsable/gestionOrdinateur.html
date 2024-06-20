@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+
+            <p th:if="${Ordinateurs.size() == 0}">Aucun Ordinateur Disponible</p>
+
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <p >Liste des Ordinateurs</p>
+            <div class="table-main table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="order-date">CPU</th>
+                        <th>RAM</th>
+                        <th class="price-pr">Ecran</th>
+                        <th class="price-pr">Marque</th>
+
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="ordinateur : ${Ordinateurs}">
+
+
+                        <td class="price-pr">
+                            <p th:text="${ordinateur.cpu}"></p>
+                        </td>
+                        <td class="quantity-box" th:text="${ordinateur.ram}"></td>
+
+
+
+                        <td class="quantity-box" th:text="${ordinateur.ecran}"></td>
+                        <td class="quantity-box" th:text="${ordinateur.marque}"></td>
+
+
+                        <td>
+                            <a   th:href="@{/cancel-order(id = ${ordinateur.id})}"
+                               class="btn btn-primary">Cancel</a>
+                            <a  th:href="@{/accept-order(id = ${ordinateur.id})}"
+                               class=" btn btn-secondary">Accept</a>
+                        </td>
+                        </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+        </div>
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+
+<!--Add Categories Modal-->
+
+
+<!--End-->
+
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

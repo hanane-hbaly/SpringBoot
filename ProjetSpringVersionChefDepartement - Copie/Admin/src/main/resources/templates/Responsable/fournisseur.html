@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+
+
+            <p th:if="${fournisseurs.size() == 0}">Aucun Fournisseur</p>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <br></br>
+            <p >Liste des fournisseur</p>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Actions</th>
+                    <th scope="col">Supprimer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="fournisseur : ${fournisseurs}">
+                    <td th:text="${fournisseur.firstName}"></td>
+                    <td th:text="${fournisseur.lastName}"></td>
+                    <td th:text="${fournisseur.username}"></td>
+                    <td>
+                        <input type="checkbox" name="besoins" th:value="${fournisseur.id}" class="besoin-checkbox" th:disabled="${fournisseur.blackList}" />
+                    </td>
+                    <td>
+                        <a th:href="@{/delete-fournisseur(id=${fournisseur.id})}" class="btn btn-danger">Delete</a>
+                    </td>
+                    <input type="hidden" id="fournisseurIds" name="fournisseurIds" th:value="${fournisseur.id}">
+                </tr>
+                </tbody>
+            </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleRejectCategoryModal" onclick="collectFournisseur()">Ajouter à la liste noire</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleAddCategoryModalLabel2" onclick="collectAndShowProviderForms()">
+                    Accepter
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+
+<!--Add Categories Modal-->
+<div class="modal fade" id="exampleAddCategoryModalLabel2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="acceptModalLabel">Accepter les fournisseurs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="acceptForm" th:action="@{/accept-fournisseurs}" method="post">
+                    <div id="providerForms">
+                        <div class="form-group">
+                            <label for="adresse" class="col-form-label">Adresse:</label>
+                            <input type="text" class="form-control" id="adresse" name="adresse">
+                        </div>
+                        <div class="form-group">
+                            <label for="gerant" class="col-form-label">Gérant:</label>
+                            <input type="text" class="form-control" id="gerant" name="gerant">
+                        </div>
+
+                        <!-- Ajoutez d'autres champs si nécessaire -->
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fonction pour collecter les fournisseurs sélectionnés et afficher le formulaire pour chaque fournisseur
+    function collectAndShowProviderForms() {
+        var checkboxes = document.querySelectorAll('.besoin-checkbox:checked');
+        var providerFormsContainer = document.getElementById('providerForms');
+        providerFormsContainer.innerHTML = ''; // Nettoyer le contenu précédent
+
+        checkboxes.forEach(function(checkbox) {
+            var providerForm = document.createElement('div');
+            providerForm.innerHTML = `
+ <input type="hidden" class="form-control" value="${checkbox.value}" name="fournisseurIds">
+            <h5>Fournisseur ID: ${checkbox.value}</h5>
+
+            <div class="form-group">
+                <label for="address_${checkbox.value}">Adresse:</label>
+                <input type="text" class="form-control" id="address_${checkbox.value}" name="addresses" required>
+            </div>
+            <div class="form-group">
+                <label for="manager_${checkbox.value}">Gérant:</label>
+                <input type="text" class="form-control" id="manager_${checkbox.value}" name="managers" required>
+            </div>
+            <hr>
+        `;
+            providerFormsContainer.appendChild(providerForm);
+        });
+    }
+
+
+    // Événement déclenché lors du clic sur le bouton "Accepter"
+    document.getElementById('acceptModal').addEventListener('show.bs.modal', function (event) {
+        collectAndShowProviderForms();
+    });
+
+    // Soumettre le formulaire d'acceptation des fournisseurs
+    function submitAcceptForm() {
+        document.getElementById('acceptForm').submit();
+    }
+</script>
+
+
+
+
+<!--End-->
+
+<!-- Modal pour l'acceptation -->
+
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit departement</h5>
+            </div>
+            <div class="modal-body">
+                <form method="put" th:action="@{/update-Members}" >
+                    <div class="form-group">
+                        <label for="idEdit" class="col-form-label">ID
+                        </label> <input type="text" class="form-control" id="idEdit" name="id" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-form-label">Category
+                            Name</label> <input type="text" class="form-control" id="editname" name="nomDepartement">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End -->
+
+<div class="modal fade" id="exampleRejectCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/reject-fournisseur}" method="post" id="dateFinForm">
+
+                    <div class="form-group">
+                        <label >Voulez vous vraiment Ajouter ces Fournisseur a la liste Noire</label>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" >Valider</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+
+    <script th:src="@{/js/categories.js}"></script>
+    <script>
+        // Fonction pour collecter les ID des besoins
+        function collectFournisseur() {
+            var besoinsSelectionnes = [];
+            var checkboxes = document.querySelectorAll('.besoin-checkbox:checked');
+            checkboxes.forEach(function(checkbox) {
+                besoinsSelectionnes.push(checkbox.value);
+            });
+            // Stocker les ID des besoins dans un champ caché du formulaire
+            var besoinsInput = document.createElement('input');
+            besoinsInput.setAttribute('type', 'hidden');
+            besoinsInput.setAttribute('name', 'fournisseur');
+            besoinsInput.setAttribute('value', besoinsSelectionnes.join(','));
+            document.getElementById('dateFinForm').appendChild(besoinsInput);
+        }
+    </script>
+
+    <script th:src="@{/js/categories.js}"></script>
+</div></body>
+
+</html>

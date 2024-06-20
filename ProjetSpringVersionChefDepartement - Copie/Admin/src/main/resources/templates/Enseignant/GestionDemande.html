@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Enseignant/fragmentsEnseignant::header}">
+    <style>
+        /* Ajoutez une règle de style pour le select avec l'ID "choix" */
+        #choix {
+            width: 1500px !important;
+        }
+    </style>
+</head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Enseignant/fragmentsEnseignant::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div class="d-flex flex-column" id="content-wrapper">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Enseignant/fragmentsEnseignant::top-navbar}"></nav>
+
+
+            <div class="pagetitle">
+
+
+                <h1> Ajouter besoin</h1>
+            </div>
+            <section class="section">
+
+                <form id="besoinForm">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text">Cet espace est pour ajouter vos besoins. Votre présence à la
+                                        réunion du département est <code>obligatoire</code> après avoir collecté tous
+                                        vos besoins.</p>
+                                    <div class="col-lg-12">
+                                        <div class="form-group mb-4 ">
+                                            <label class="form-label" for="choix">Type de besoin :</label>
+                                            <select class="form-select form-control-lg" id="choix" name="choix"
+                                                    onchange="afficherForm()">
+                                                <option
+                                                        value="ordinateur">
+                                                    Ordinateur
+                                                </option>
+                                                <option value="imprimante">Imprimante</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <!-- Formulaire pour l'ordinateur -->
+                                    <div  id="formOrdinateurr" >
+                                        <form class="hidden" id="formOrdinateur" method="post" th:action="@{/save-Besoin}">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="cpu">CPU :</label>
+                                                    <select class="form-select" id="cpu" name="cpu">
+                                                        <option value="4 CPU">4 CPU</option>
+                                                        <option value="6 CPU">6 CPU</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="ram">RAM :</label>
+                                                    <select class="form-select" id="ram" name="ram">
+                                                        <option value="4"> 4 GO </option>
+                                                        <option value="8"> 8 GO </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="disqueDur">Disque :</label>
+                                                    <select class="form-select" id="disqueDur" name="disqueDur">
+                                                        <option     value="128Go SSD">   128Go SSD  </option>
+                                                        <option
+                                                                value="256Go SSD">
+                                                            256Go SSD
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="ecran">Ecran :</label>
+                                                    <select class="form-select" id="ecran" name="ecran">
+                                                        <option
+                                                                value="1920x1080 (Full HD)">
+                                                            1920x1080 (Full HD)
+                                                        </option>
+                                                        <option
+                                                                value="2560x1440 (Quad HD)">
+                                                            2560x1440 (Quad HD)
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary" onclick="saveOrdinateur()"
+                                                            type="submit">Envoyer besoin
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+
+
+
+                                    <div id="formImprimantee" >
+                                        <form class="hidden" id="formImprimante" method="post" th:action="@{/save-imp}">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="resolution">Resolution :</label>
+                                                    <select class="form-select" id="resolution" name="resolution">
+                                                        <option value="1920x1080 (Full HD)">1920x1080 (Full HD)</option>
+                                                        <option value="2560x1440 (Quad HD)">2560x1440 (Quad HD)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label" for="vitesse">Vitesse :</label>
+                                                    <select class="form-select" id="vitesse" name="vitesse">
+                                                        <option value="28 ppm (noir et blanc)">28 ppm (noir et blanc)
+                                                        </option>
+                                                        <option value="[15-10] ipm (noir et blanc)">[15-10] ipm (noir et
+                                                            blanc)
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button class="btn btn-primary" onclick="saveImprimant()"
+                                                            type="submit">Envoyer besoin
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div id="successModal" class="modal" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Succès</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Le besoin a été enregistré avec succès.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    afficherForm();
+                });
+                function afficherForm() {
+                    var choix = document.getElementById("choix").value;
+                    var formOrdinateur = document.getElementById("formOrdinateurr");
+                    var formImprimante = document.getElementById("formImprimantee");
+                    // Masquer tous les formulaires
+                    formOrdinateur.style.display = "none";
+                    formImprimante.style.display = "none";
+                    // Afficher le formulaire correspondant au choix de l'utilisateur
+                    if (choix === "ordinateur") {
+                        formOrdinateur.style.display = "block";
+                    } else if (choix === "imprimante") {
+                        formImprimante.style.display = "block";
+                    }
+                }
+
+                function saveOrdinateur() {
+                    var cpu = document.getElementById("cpu").value;
+                    var ram = document.getElementById("ram").value;
+                    var disqueDur = document.getElementById("disqueDur").value;
+                    var ecran = document.getElementById("ecran").value;
+                    var formData = new FormData();
+                    formData.append("cpu", cpu);
+                    formData.append("ram", ram);
+                    formData.append("disqueDur", disqueDur);
+                    formData.append("ecran", ecran);
+                    var xhr = new XMLHttpRequest();
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal')); // Créer une instance de la boîte de dialogue
+                    successModal.show();
+                    setTimeout(function() {
+                        successModal.hide();
+                    }, 100000);
+                    xhr.open("POST", "/save-Besoin");
+                    xhr.send(formData);
+                    document.getElementById("formOrdinateur").submit();
+                }
+
+                function saveImprimant() {
+                    var resolution = document.getElementById("resolution");
+                    var vitesse = document.getElementById("vitesse");
+                    var formData = new FormData();
+                    formData.append("vitesse", vitesse);
+                    formData.append("resolution", resolution);
+                    var xhr = new XMLHttpRequest();
+
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal')); // Créer une instance de la boîte de dialogue
+                    successModal.show(); // Afficher la boîte de dialogue de succès
+                    setTimeout(function() {
+                        successModal.hide();
+                    }, 100000);
+                    xhr.open("POST", "/save-imp");
+                    xhr.send(formData);
+                    document.getElementById("formImprimante").submit();
+                }
+                // function saveImprimant() {
+                //     var resolution = document.getElementById("resolution");
+                //     var vitesse = document.getElementById("vitesse")
+                //     var formData = new FormData();
+                //     formData.append("vitesse", vitesse)
+                //     formData.append("resolution", resolution)
+                //     var xhr = new XMLHttpRequest();
+                //     xhr.open("POST", "/save-imp");
+                //     xhr.send(formData);
+                //     document.getElementById("formImprimante").submit();
+                // }
+
+            </script>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<!--</section>-->
+
+
+<!-- Footer -->
+<footer th:replace="~{Enseignant/fragmentsEnseignant::footer}"></footer>
+<!-- End of Footer -->
+
+<!--</div>-->
+<!-- End of Content Wrapper -->
+
+<!--</div>-->
+<!--</div>-->
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Enseignant/fragmentsEnseignant::scroll}"></a>
+
+
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Enseignant/fragmentsEnseignant::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

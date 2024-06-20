@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Fournisseur/fragmentsFournisseures::header}">
+    <style>
+        /* Ajoutez une règle de style pour le select avec l'ID "choix" */
+        #choix {
+            width: 1500px !important;
+        }
+    </style>
+</head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Fournisseur/fragmentsFournisseures::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div class="d-flex flex-column" id="content-wrapper">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Fournisseur/fragmentsFournisseures::top-navbar}"></nav>
+
+
+            <div class="pagetitle">
+
+
+<!--                <h1> Mes Proposition</h1>-->
+                <h1>Liste de vos Propositions</h1>
+
+
+            </div>
+
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>ID Ressource</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th>Prix</th>
+                        <th>Marque</th>
+                        <th>État</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Utiliser Thymeleaf pour itérer sur la liste des offres et afficher leurs détails -->
+                    <tr th:each="offre : ${offres}">
+                        <td>
+                            <!-- Utiliser Thymeleaf pour itérer sur les ressources de l'offre et afficher leurs détails -->
+                            <div th:each="ressource : ${offre.ressources}">
+                                <span th:text="${ressource.idRessource}"></span>
+                            </div>
+                        </td>
+                        <td th:text="${offre.dateDebut}"></td>
+                        <td th:text="${offre.dateFin}"></td>
+                        <td>
+                            <!-- Utiliser Thymeleaf pour itérer sur les ressources de l'offre et afficher leurs détails -->
+                            <div th:each="ressource : ${offre.ressources}">
+                                <span th:text="${ressource.prix}"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Utiliser Thymeleaf pour itérer sur les ressources de l'offre et afficher leurs détails -->
+                            <div th:each="ressource : ${offre.ressources}">
+                                <span th:text="${ressource.marque}"></span>
+                            </div>
+                        </td>
+                        <td th:text="${offre.isAffected ? 'Acceptée' : (offre.isRejected ? 'Rejetée' : 'En Attente')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Footer -->
+<footer th:replace="~{Fournisseur/fragmentsFournisseures::footer}"></footer>
+<!-- End of Footer -->
+
+<!--</div>-->
+<!-- End of Content Wrapper -->
+
+<!--</div>-->
+<!--</div>-->
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Fournisseur/fragmentsFournisseures::scroll}"></a>
+
+
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Fournisseur/fragmentsFournisseures::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>

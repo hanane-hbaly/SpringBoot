@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <p th:if="${PannesAvecRessource.size() == 0 && Pannes.size()==0 && Ressources.size()==0}">Aucun constat disponible</p>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}"></p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <p>Liste des Constats</p>
+            <div class="table-main table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="total-pr">Code à Barre</th>
+                        <th>date d'apparition</th>
+                        <th class="price-pr">Explication panne</th>
+                        <th class="quantity-box">frequence</th>
+                        <th class="total-pr">ordre</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="panne, i : ${Pannes}">
+                        <td class="order-date" th:text="${PannesAvecRessource[i.index].codeBarre}"></td>
+                        <td class="order-date" th:text="${panne.get().dateApparition}"></td>
+                        <td class="price-pr" th:text="${panne.get().explication}"></td>
+                        <td class="quantity-box" th:text="${panne.get().frequence}"></td>
+                        <td class="total-pr" style="color: black" th:text="${panne.get().ordre}"></td>
+                        <td>
+                            <a th:if="${ !Ressources[i.index].isDeleted && Ressources[i.index].dateFinGarantie.before(#dates.createNow())}"
+                               th:href="@{/update-constat(id=${Ressources[i.index].id})}"
+                               class="btn btn-primary">Envoyer</a>
+
+                            <a th:if="${ !Ressources[i.index].isDeleted && Ressources[i.index].dateFinGarantie.after(#dates.createNow())}"
+                               th:href="@{/update-constat(id=${Ressources[i.index].id})}"
+                               class="btn btn-primary">Changer</a>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+            <!-- End of Footer -->
+        </div>
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{fResponsable/fragmentsRespo::scroll}"></a>
+
+<!--Add Categories Modal-->
+<!--End-->
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+<script th:src="@{/js/categories.js}"></script>
+</body>
+</html>

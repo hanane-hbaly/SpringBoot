@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Responsable/fragmentsRespo::header}"></head>
+<body id="page-top">
+<div id="wrapper">
+    <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+            <div class="container-fluid">
+
+                <p th:if="${offres.size() == 0}">Aucun Ordre disponible</p>
+                <div th:if="${success}" class="text-center alert alert-success">
+                    <p th:text="${success}"></p>
+                </div>
+                <div th:if="${error}" class="text-center alert alert-danger">
+                    <p th:text="${error}"></p>
+                </div>
+                <br/>
+                <p>Liste des Offres ajoutées</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="order-date">Date Debut</th>
+                        <th>Date Fin</th>
+                        <th>Fournisseur</th>
+                        <th>ressource</th>
+                        <th class="price-pr">STATUS</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="offre,i : ${offres}">
+                        <td class="price-pr">
+                            <p th:text="${offre.dateDebut}"></p>
+                        </td>
+                        <td class="quantity-box" th:text="${offre.dateFin}"></td>
+                        <td class="quantity-box" th:text="${fournisseurDetailsList[i.index].firstName + ' ' + fournisseurDetailsList[i.index].lastName}"></td>
+                        <td class="quantity-box" th:text="${offre.ressources.size()}"></td>
+                        <td class="quantity-box">
+                            <span th:if="${offre.isRejected}" class="status rejected alert-danger">Rejected</span>
+                            <span th:if="${offre.isAffected}" class="status accepted alert-success">Accepted</span>
+                            <span th:if="${offre.isWaiting}" class="status pending alert-info">Pending</span>
+                        </td>
+                        <td>
+                            <input type="checkbox" class="offer-checkbox" id="checkbox_${offre.id}" th:value="${offre.id}"  th:disabled="${offre.isRejected}" onchange="updateHiddenInput(this)">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" id="manageOffersBtn" data-toggle="modal" data-target="#manageOffersModal">Gérer Offre</button>
+                <div class="modal " id="manageOffersModal" tabindex="-1" role="dialog" aria-labelledby="manageResourceModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="manageResourceModalLabel">Gérer les Ressources</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{/traiter-ressources}" method="post" id="manageOffersForm">
+                                    <div class="form-group">
+                                        <label for="codeBarre" class="col-form-label">Code Barre:</label>
+                                        <input type="text" class="form-control" id="codeBarre" name="codeBarre">
+                                        <input type="hidden" id="offreId" name="offreId" >
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        <button type="submit" class="btn btn-primary">Valider</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <nav aria-label="..."></nav>
+            </div>
+        </div>
+        <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+    </div>
+</div>
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    function updateHiddenInput(checkbox) {
+        let hiddenInput = document.getElementById('offreId');
+        let offreId = checkbox.value;
+
+        if (checkbox.checked) {
+            hiddenInput.value = offreId;
+            console.log(offreId)
+        } else {
+            hiddenInput.value = '';
+        }
+    }
+
+    document.getElementById('manageOffersBtn').addEventListener('click', function() {
+        $('#manageOffersModal').modal('show');
+    });
+
+    document.getElementById('manageOffersForm').addEventListener('submit', function() {
+        updateHiddenInput(document.querySelector('.offer-checkbox:checked'));
+    });
+</script>
+</body>
+</html>

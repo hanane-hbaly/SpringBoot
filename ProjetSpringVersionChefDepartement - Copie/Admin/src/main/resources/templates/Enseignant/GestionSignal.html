@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Enseignant/fragmentsEnseignant::header}"></head>
+<body id="page-top">
+<!-- Page Wrapper -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <ul th:replace="~{Enseignant/fragmentsEnseignant::sidebar}"></ul>
+    <!-- End of Sidebar -->
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+            <!-- Topbar -->
+            <nav th:replace="~{Enseignant/fragmentsEnseignant::top-navbar}"></nav>
+            <!-- End of Topbar -->
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Signaler une panne</h1>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <!-- Form to select a barcode -->
+
+                        <form id="panneForm" th:action="@{/signaler-panne}" method="post">
+                            <div class="form-group">
+                                <label for="codes-barres">Sélectionner le code-barre :</label>
+                                <select id="codes-barres" name="codeBarre" class="form-control custom-select" required>
+                                    <option value="" selected disabled hidden>Choisir un code-barre</option>
+
+                                    <option th:each="ressource : ${ressources}" th:value="${ressource.codeBarre}" th:text="${ressource.codeBarre}"></option>
+                                </select>
+                            </div>
+                            <!-- Hidden input for user ID -->
+                            <input type="hidden" id="userId" name="userId" th:value="${userId}">
+                            <!-- Button to confirm submission -->
+                            <button type="button" class="btn btn-primary" onclick="validateAndSubmit()">Signaler une panne</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Main Content -->
+        <!-- Footer -->
+        <footer th:replace="~{fragments::footer}"></footer>
+        <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+</div>
+<!-- End of Page Wrapper -->
+<!-- Scroll to Top Button-->
+<a th:replace="~{fragments::scroll}"></a>
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{fragments::script}"></div>
+<style>
+    .custom-select:required:invalid {
+        color: gray;  /* Text color for the placeholder */
+    }
+</style>
+<script>
+    function validateAndSubmit() {
+        var selectedOption = document.getElementById("codes-barres").value;
+        if (!selectedOption) {
+            alert("Veuillez sélectionner un code-barre.");
+        } else {
+            if (confirm("Êtes-vous sûr de vouloir signaler une panne?")) {
+                document.getElementById("panneForm").submit();
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

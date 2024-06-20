@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="~{Responsable/fragmentsRespo::header}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body id="page-top">
+
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+  <!--Sidebar-->
+  <ul th:replace="~{Responsable/fragmentsRespo::sidebar}"></ul>
+  <!-- End of Sidebar -->
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      <!-- Topbar -->
+      <nav th:replace="~{Responsable/fragmentsRespo::top-navbar}"></nav>
+      <!-- End of Topbar -->
+
+      <!-- Begin Page Content -->
+
+      <p th:if="${ordinateurs.size() == 0}">Pas d'Ordinateurs disponibles</p>
+      <p th:if="${imprimantes.size() == 0}">Pas d'Imprimantes disponibles</p>
+      <div th:if="${success}" class="text-center alert alert-success">
+        <p th:text="${success}">
+        </p>
+      </div>
+      <div th:if="${error}" class="text-center alert alert-danger">
+        <p th:text="${error}"></p>
+      </div>
+      <br>
+      <p >Liste des Ressources</p>
+      <!-- Tableau pour afficher les ressources -->
+      <div class="container mt-5">
+        <h2 class="mb-4">Liste des Ressources</h2>
+
+        <!-- Sélecteur pour choisir le type de ressource -->
+
+        <select id="typeRessource" class="form-control mb-3" onchange="toggleTable()">
+
+          <option value="ordinateur">Ordinateur</option>
+          <option value="imprimante">Imprimante</option>
+        </select>
+
+        <!-- Tableau pour afficher les ressources -->
+        <div id="tableContainer">
+          <table id="ordinateur" class="table table-striped">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>CPU</th>
+              <th>Disque dur</th>
+              <th>Code à barre</th>
+              <th>Ecran</th>
+              <th>Ram</th>
+              <th>Fournisseur</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ordinateur,i : ${ordinateurs}">
+              <td th:text="${ordinateur.id}"></td>
+              <td th:text="${ordinateur.cpu}"></td>
+              <td th:text="${ordinateur.disqueDur}"></td>
+              <td th:text="${ordinateur.codeBarre}"></td>
+
+              <td th:text="${ordinateur.ecran}"></td>
+              <td th:text="${ordinateur.ram}"></td>
+              <td th:text="${Fournisseur[i.index]}"></td>
+              <td>
+                <!-- Bouton "Affecter" -->
+                <button type="button" class="btn btn-primary affecter-btn"
+                        data-toggle="modal" data-target="#affecterModal"
+                        th:if="${!ordinateur.isAffected}">
+                  Affecter
+                </button>
+                <button type="button" class="btn btn-primary affecter-btn"
+                        data-toggle="modal" data-target="#affecterModal" th:if="${ordinateur.isAffected}" th:attr="data-ressource-id=${ordinateur.id}">Modifier Affectation</button>
+
+                <!-- Bouton "Supprimer" -->
+                <button type="button" class="btn btn-danger"
+                        th:attr="data-url=@{/delete(id=${ordinateur.id})}"
+                        onclick="confirmDelete(this)">
+                  Supprimer
+                </button>
+
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+          <table id="imprimante" class="table table-striped" style="display: none;">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resolution</th>
+              <th>Vitesse d'imression</th>
+              <th>Code à barre</th>
+              <th>Fournisseur</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="imprimante ,i: ${imprimantes}">
+              <td th:text="${imprimante.id}"></td>
+              <td th:text="${imprimante.resolution}"></td>
+              <td th:text="${imprimante.vitesseImpression}"></td>
+              <td th:text="${imprimante.codeBarre}"></td>
+              <td th:text="${FournisseuImprr[i.index]}"></td>
+
+              <td>
+                <!-- Bouton "Affecter" -->
+                <button type="button" class="btn btn-primary affecter-btn"
+                        data-toggle="modal" data-target="#affecterModalImpr"
+                        th:if="${!imprimante.isAffected}">
+                  Affecter
+                </button>
+
+                <button type="button" class="btn btn-primary affecter-btn"
+                        data-toggle="modal" data-target="#affecterModalImpr"
+                        th:if="${imprimante.isAffected}">
+                  ModifierAffectation
+                </button>
+
+                <!-- Bouton "Supprimer" -->
+                <button type="button" class="btn btn-danger" th:attr="data-ressource-id=${imprimante.id}" th:href="@{/deleteImpr(id = ${imprimante.id})}">Supprimer</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer th:replace="~{Responsable/fragmentsRespo::footer}"></footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Responsable/fragmentsRespo::scroll}"></a>
+
+<!-- Modal pour l'affectation -->
+<!-- Modal pour l'affectation -->
+<div class="modal" id="affecterModal" tabindex="-1" role="dialog" aria-labelledby="affecterModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="affecterModalLabel">Affecter Ressource</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Ajoutez un élément pour afficher l'ID de la ressource -->
+        <p>L'ID de la ressource est :
+
+          <!-- Formulaire pour l'affectation -->
+        <form th:action="@{/affecterRessource}" method="post">
+          <div class="form-group">
+            <label for="departementSelect">Choisir le département :</label>
+            <select class="form-control" id="departementSelect" name="departementSelect">
+              <option th:each="departement : ${departements}" th:value="${departement.id}" th:text="${departement.nomDepartement}"></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="membreSelect">Choisir le membre du département :</label>
+            <select class="form-control" id="membreSelect" name="membreSelect">
+              <option th:each="membre : ${membresDepartement}" th:value="${membre.id}" th:text="${membre.firstName} + ' ' + ${membre.lastName}"></option>
+            </select>
+          </div>
+          <input type="hidden" id="ordinateurId" name="ordinateurId" value="">
+
+          <!-- Remplacer "ordinateurId" par le nom correct de l'identifiant de la ressource -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            <button type="submit" class="btn btn-primary">Affecter</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="affecterModalImpr" tabindex="-1" role="dialog" aria-labelledby="affecterModalLabelimp" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="affecterModalLabelimp">Affecter Ressource</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Ajoutez un élément pour afficher l'ID de la ressource -->
+        <p>L'ID de la ressource est :
+
+          <!-- Formulaire pour l'affectation -->
+        <form th:action="@{/affecterImpr}" method="post">
+          <div class="form-group">
+            <label for="departementSelect1">Choisir le département :</label>
+            <select class="form-control" id="departementSelect1" name="departementSelect1">
+              <option th:each="departement : ${departements}" th:value="${departement.id}" th:text="${departement.nomDepartement}"></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="membreSelect1">Choisir le membre du département :</label>
+            <select class="form-control" id="membreSelect1" name="membreSelect1">
+              <option th:each="membre : ${membresDepartement}" th:value="${membre.id}" th:text="${membre.firstName} + ' ' + ${membre.lastName}"></option>
+            </select>
+          </div>
+          <input type="hidden" id="imprimanteId" name="imprimanteId" value="">
+
+          <!-- Remplacer "ordinateurId" par le nom correct de l'identifiant de la ressource -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            <button type="submit" class="btn btn-primary">Affecter</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal pour la suppression -->
+<div class="modal fade" id="supprimerModal" tabindex="-1" role="dialog" aria-labelledby="supprimerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="supprimerModalLabel">Supprimer Ressource</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer cette ressource ?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--End-->
+
+
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Responsable/fragmentsRespo::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+
+<script>
+  document.getElementById('typeRessource').addEventListener('change', function() {
+    let selectedType = this.value;
+    let ordinateurTable = document.getElementById('ordinateurTable');
+    let imprimanteTable = document.getElementById('imprimanteTable');
+
+    if (selectedType === 'ordinateur') {
+      ordinateurTable.style.display = 'table';
+      imprimanteTable.style.display = 'none';
+    } else if (selectedType === 'imprimante') {
+      ordinateurTable.style.display = 'none';
+      imprimanteTable.style.display = 'table';
+    }
+  });
+</script>
+<script th:inline="javascript">
+  function confirmDelete(button) {
+    var url = button.getAttribute('data-url');
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+      window.location.href = url;
+    }
+  }
+</script>
+
+<script>
+
+  function toggleTable() {
+    let typeSelectionne = document.getElementById("typeRessource").value;
+
+    if (typeSelectionne === "ordinateur") {
+      document.getElementById("ordinateur").style.display = "table";
+      document.getElementById("imprimante").style.display = "none";
+    } else if (typeSelectionne === "imprimante") {
+      document.getElementById("ordinateur").style.display = "none";
+      document.getElementById("imprimante").style.display = "table";
+    }
+  }
+</script>
+<script>
+  // JavaScript pour capturer l'ID de l'ordinateur et le transmettre au formulaire
+  document.querySelectorAll('.affecter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var ordinateurId = btn.closest('tr').querySelector('td:first-child').innerText;
+      var modalForm = document.querySelector('#affecterModal form');
+      var idElement = modalForm.querySelector('#ordinateurId');
+      idElement.value = ordinateurId;
+    });
+  });
+</script>
+<script>
+  // JavaScript pour capturer l'ID de l'ordinateur et le transmettre au formulaire
+  document.querySelectorAll('.affecter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var ordinateurId = btn.closest('tr').querySelector('td:first-child').innerText;
+      var modalForm = document.querySelector('#affecterModalImpr form');
+      var idElement = modalForm.querySelector('#imprimanteId');
+      idElement.value = ordinateurId;
+    });
+  });
+</script>
+
+
+
+</body>
+
+</html>

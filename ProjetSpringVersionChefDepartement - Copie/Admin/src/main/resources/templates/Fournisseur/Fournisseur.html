@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace = "~{Fournisseur/fragmentsFournisseures::header}">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul th:replace = "~{Fournisseur/fragmentsFournisseures::sidebar}">
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav  th:replace = "~{Fournisseur/fragmentsFournisseures::top-navbar}">
+            </nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+
+                <h1 class="h3 mb-0 text-gray-800" style="font-size: 2em; text-align: center;">BIENVENUE Fournisseur</h1>
+
+
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace = "~{Fournisseur/fragmentsFournisseures::footer}"></footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace = "~{Fournisseur/fragmentsFournisseures::scroll}" >
+</a>
+<div th:replace = "~{Fournisseur/fragmentsFournisseures::script}"></div>
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/js/demo/chart-area-demo.js}"></script>
+<script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+</body>
+
+</html>

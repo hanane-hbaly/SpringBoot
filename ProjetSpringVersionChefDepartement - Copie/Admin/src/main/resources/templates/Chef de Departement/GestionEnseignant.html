@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{Chef de Departement/fragmentsChef::header}"></head>
+<body id="page-top">
+<script th:inline="javascript">
+    /* Récupération de la liste des départements depuis le modèle */
+    var categories = [[${categories}]] ;
+
+    /* Affichage de chaque département dans la console */
+    Departement.forEach(function(departement) {
+        console.log("La valeur : ", departement);
+    });
+</script>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{Chef de Departement/fragmentsChef::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{Chef de Departement/fragmentsChef::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleAddCategoryModal"
+                    data-whatever="@mdo">Notifier les Enseignants
+            </button>
+            <br>
+            <br>
+            <p th:if="${Enseignants.size()== 0}">Aucun Enseignant pour l'instant</p>
+
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+            <p >Liste des Enseignants</p>
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th class="order-date">ID</th>
+
+                    <th>Prenom</th>
+                    <th class="price-pr">Nom</th>
+                    <th class="price-pr">Username</th>
+                    <th>Departement</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="departement : ${Enseignants}">
+
+                    <th scope="row" th:text="${departement.id}"></th>
+                    <td th:text="${departement.firstName}"></td>
+                    <td th:text="${departement.lastName}"></td>
+                    <td th:text="${departement.username}"></td>
+                    <td th:text="${departement.departement.nomDepartement}"></td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="~{Chef de Departement/fragmentsChef::footer}"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{Chef de Departement/fragmentsChef::scroll}"></a>
+
+<!--Add Categories Modal-->
+<div class="modal fade" id="exampleAddCategoryModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleAddCategoryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleAddCategoryModalLabel">Date limite d'ajout des besoins</h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/notifyMembers}" method="post">
+                    <!-- Input pour la date limite -->
+                    <div class="form-group">
+                        <label for="datefin" class="col-form-label">Date Limite d'envoi des besoins:</label>
+                        <input id="datefin" name="datefin" class="form-control input-md" required="" type="date">
+                    </div>
+                    <!-- Boucle pour inclure les enseignants comme champs cachés -->
+                    <div th:each="enseignant : ${Enseignants}">
+                        <input type="hidden" name="Enseignants" th:value="${enseignant.id}" />
+                    </div>
+                    <div th:each="departement : ${departement}">
+                        <input type="hidden" name="departement" th:value="${departement}" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Notifier</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--End-->
+
+
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{Chef de Departement/fragmentsChef::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>
